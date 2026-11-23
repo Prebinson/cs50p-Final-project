@@ -10,7 +10,35 @@ def new_task(user, time, goal):
         writer = csv.DictWriter(f, fieldnames=fieldname)
         writer.writeheader()
         writer.writerow({"Task": user, "Goal": goal,
-                        "Progress": "Pending", "Time": time.strftime("%d/%m/%Y")})
+                        "Progress": "Pending", 
+                        "Time": time.strftime("%d/%m/%Y")})
+        break
+
+
+def update_progress(user):
+    pro = {"1": "Start",
+           "2": "Quarter",
+           "3": "Half",
+           "4": "Half and Quater",
+           "5": "About to finish",
+           "6": "Finished"}
+    for key, value in pro.items():
+        print(f"{key}: {value}")
+    try:
+        pro_user = input("Where are you: ")
+        for key, value in pro.items():
+            if pro_user == key:
+                with open("task.csv", mode="r")as fi:
+                    file = list(csv.reader(fi))
+                    file[user][2] = value
+                with open("task.csv", mode="w")as fi:
+                    writer = csv.writer(fi)
+                    writer.writerows(file)
+                    break
+            else:
+                raise ValueError
+    except ValueError:
+        print("Enter valid option")
 
 
 def main():
@@ -45,11 +73,16 @@ def main():
                     task_list = pd.read_csv("task.csv")
                     task_list.index = range(1, len(task_list)+1)
                     print(task_list)
-                    user = input("Enter Which Task")
+                    user = int(input("Enter Which Task"))
+                    if user > len(task_list)+1:
+                        raise ValueError
                 except pd.errors.EmptyDataError:
                     print("No Task is has been created")
                     continue
-                # update_progress()
+                except ValueError:
+                    print("Enter valid Option")
+                    continue
+                update_progress(user)
             case 3:
                 pending_task()
             case 4:
