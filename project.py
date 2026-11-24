@@ -12,7 +12,6 @@ def new_task(user, time, goal):
         writer.writerow({"Task": user, "Goal": goal,
                         "Progress": "Pending",
                          "Time": time.strftime("%d/%m/%Y")})
-        
 
 
 def update_progress(user):
@@ -42,13 +41,20 @@ def update_progress(user):
             print("Enter valid option")
             continue
 
-    def pending_task():
-        with open("task.csv") as fi:
-            file = csv.reader(fi)
-            while True:
-                for i in file:
-                    if i[3] != "Finished":
-                        print(i)
+
+def pending_task():
+    with open("task.csv", mode="r") as fi:
+        file = csv.reader(fi)
+        for i in file:
+            if i and i[2] != "Finished":
+                print(i)
+        user = input("Enter 1 to exit: ")
+        while True:
+            if user == "1":
+                break
+            else:
+                print("Enter valid value")
+
 
 
 def main():
@@ -56,7 +62,7 @@ def main():
         try:
             print(
                 "1. New Task\n2. Update Progress\n3. Pending Task\n4. Failed Tasked\n5. Exit")
-            opt = int(input("Please enter your choice"))
+            opt = int(input("Please enter your choice: "))
         except ValueError:
             print("Enter Valid Option: ")
             continue
