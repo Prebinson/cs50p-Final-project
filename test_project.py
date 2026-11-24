@@ -33,23 +33,22 @@ def test_pending_task(tmp_path, monkeypatch,capsys):
     update_progress(1)
     monkeypatch.setattr("builtins.input", lambda _: "2")
     update_progress(2)
-    with open("task.csv",mode="r", newline="") as fi:
-        file=list(csv.reader(fi))
     pending_task()
     capture = capsys.readouterr().out
     assert "Python" in capture
     assert "Sql" not in capture
-def test_failed_tasked(tmp_path, monkeypatch):
+def test_failed_tasked(tmp_path, monkeypatch,capsys):
     monkeypatch.chdir(tmp_path)
     new_task(task,date,goal)
     new_task("Python",dt.datetime(2008,11,11),"to learn it")
-    monkeypatch.setattr("builtins.input", lambda _: "6")
+    monkeypatch.setattr("builtins.input", lambda _: "7")
     update_progress(1)
     monkeypatch.setattr("builtins.input", lambda _: "2")
     update_progress(2)
-
-
-
+    failed_tasked()
+    capture = capsys.readouterr().out
+    assert "Sql" in capture
+    assert "Python" not in capture
 
 
 

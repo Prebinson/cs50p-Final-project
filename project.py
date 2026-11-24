@@ -59,13 +59,6 @@ def failed_tasked():
         for i in file:
             if i and i[2] == "Failed":
                 print(i)
-        while True:
-            user = input("Enter 1 to exit: ")
-            if user == "1":
-                break
-            else:
-                print("Enter valid value")
-                continue
 
 
 def main():
