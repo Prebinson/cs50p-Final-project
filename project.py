@@ -8,9 +8,9 @@ def new_task(user, time, goal):
     with open("task.csv", mode="a", newline="") as f:
         fieldname = ["Task", "Goal", "Progress", "Time"]
         writer = csv.DictWriter(f, fieldnames=fieldname)
-        if f.tell()==0:
+        if f.tell() == 0:
             writer.writeheader()
-        writer.writerow({"Task": user, 
+        writer.writerow({"Task": user,
                          "Goal": goal,
                          "Progress": "Pending",
                          "Time": time.strftime("%d/%m/%Y")})
@@ -90,12 +90,11 @@ def main():
             # task2
             case 2:
                 try:
-                    task_list = pd.read_csv("task.csv")
+                    task_list = pd.read_csv("task.csv", names=["Task", "Aim", "Status", "Deadline"])
                     task_list.index = range(1, len(task_list)+1)
                     print(task_list)
                     user = int(input("Enter Which Task: "))
-                    if user not in range(1, len(task_list)+1):
-                        raise ValueError
+                    if user not in range(1, len(task_list)+1):                        raise ValueError
                 except (ValueError, pd.errors.EmptyDataError, TypeError, FileNotFoundError):
                     print("Enter valid Option")
                     continue
