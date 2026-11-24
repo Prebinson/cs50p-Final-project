@@ -8,9 +8,11 @@ def new_task(user, time, goal):
     with open("task.csv", mode="a", newline="") as f:
         fieldname = ["Task", "Goal", "Progress", "Time"]
         writer = csv.DictWriter(f, fieldnames=fieldname)
-        writer.writeheader()
-        writer.writerow({"Task": user, "Goal": goal,
-                        "Progress": "Pending",
+        if f.tell()==0:
+            writer.writeheader()
+        writer.writerow({"Task": user, 
+                         "Goal": goal,
+                         "Progress": "Pending",
                          "Time": time.strftime("%d/%m/%Y")})
 
 
@@ -20,41 +22,57 @@ def update_progress(user):
            "3": "Half",
            "4": "Half and Quater",
            "5": "About to finish",
-           "6": "Finished"}
+           "6": "Finished",
+           "7": "Failed"}
     for key, value in pro.items():
         print(f"{key}: {value}")
     while True:
         try:
             pro_user = input("Where are you: ")
-            for key, value in pro.items():
-                if pro_user == key:
-                    with open("task.csv", mode="r")as fi:
-                        file = list(csv.reader(fi))
-                        file[user][2] = value
-                    with open("task.csv", mode="w")as fi:
-                        writer = csv.writer(fi)
-                        writer.writerows(file)
-                        break
-                else:
-                    raise ValueError
+            if pro_user in pro:
+                with open("task.csv", mode="r", newline="")as fi:
+                    file = list(csv.reader(fi))
+                    file[user][2] = pro[pro_user]
+                with open("task.csv", mode="w", newline="")as fil:
+                    writer = csv.writer(fil)
+                    writer.writerows(file)
+                print("Saved")
+                break
+            else:
+                raise ValueError
         except ValueError:
             print("Enter valid option")
             continue
 
 
 def pending_task():
-    with open("task.csv", mode="r") as fi:
+    with open("task.csv", mode="r", newline="") as fi:
         file = csv.reader(fi)
         for i in file:
             if i and i[2] != "Finished":
                 print(i)
-        user = input("Enter 1 to exit: ")
         while True:
+            user = input("Enter 1 to exit: ")
             if user == "1":
                 break
             else:
                 print("Enter valid value")
+                continue
 
+
+def failed_tasked():
+    with open("task.csv", mode="r", newline="") as fi:
+        file = csv.reader(fi)
+        for i in file:
+            if i and i[2] == "Failed":
+                print(i)
+        while True:
+            user = input("Enter 1 to exit: ")
+            if user == "1":
+                break
+            else:
+                print("Enter valid value")
+                continue
 
 
 def main():
@@ -89,13 +107,10 @@ def main():
                     task_list = pd.read_csv("task.csv")
                     task_list.index = range(1, len(task_list)+1)
                     print(task_list)
-                    user = int(input("Enter Which Task"))
-                    if user > len(task_list)+1:
+                    user = int(input("Enter Which Task: "))
+                    if user not in range(1, len(task_list)+1):
                         raise ValueError
-                except pd.errors.EmptyDataError:
-                    print("No Task is has been created")
-                    continue
-                except ValueError:
+                except (ValueError, pd.errors.EmptyDataError, TypeError, FileNotFoundError):
                     print("Enter valid Option")
                     continue
                 update_progress(user)
@@ -103,13 +118,13 @@ def main():
             # pending task
             case 3:
                 pending_task()
+            # failed task
             case 4:
                 failed_tasked()
             case 5:
-                exit()
+                sys.exit("Thank you and wish you best of luck for your task")
             case _:
-                print("Invalid")
-                sys.exit()
+                print("Enter Valid Choice")
 
 
 if __name__ == "__main__":
