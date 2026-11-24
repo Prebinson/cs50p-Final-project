@@ -51,13 +51,6 @@ def pending_task():
         for i in file:
             if i and i[2] != "Finished":
                 print(i)
-        while True:
-            user = input("Enter 1 to exit: ")
-            if user == "1":
-                break
-            else:
-                print("Enter valid value")
-                continue
 
 
 def failed_tasked():
