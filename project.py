@@ -10,9 +10,9 @@ def new_task(user, time, goal):
         writer = csv.DictWriter(f, fieldnames=fieldname)
         writer.writeheader()
         writer.writerow({"Task": user, "Goal": goal,
-                        "Progress": "Pending", 
-                        "Time": time.strftime("%d/%m/%Y")})
-        break
+                        "Progress": "Pending",
+                         "Time": time.strftime("%d/%m/%Y")})
+        
 
 
 def update_progress(user):
@@ -24,21 +24,31 @@ def update_progress(user):
            "6": "Finished"}
     for key, value in pro.items():
         print(f"{key}: {value}")
-    try:
-        pro_user = input("Where are you: ")
-        for key, value in pro.items():
-            if pro_user == key:
-                with open("task.csv", mode="r")as fi:
-                    file = list(csv.reader(fi))
-                    file[user][2] = value
-                with open("task.csv", mode="w")as fi:
-                    writer = csv.writer(fi)
-                    writer.writerows(file)
-                    break
-            else:
-                raise ValueError
-    except ValueError:
-        print("Enter valid option")
+    while True:
+        try:
+            pro_user = input("Where are you: ")
+            for key, value in pro.items():
+                if pro_user == key:
+                    with open("task.csv", mode="r")as fi:
+                        file = list(csv.reader(fi))
+                        file[user][2] = value
+                    with open("task.csv", mode="w")as fi:
+                        writer = csv.writer(fi)
+                        writer.writerows(file)
+                        break
+                else:
+                    raise ValueError
+        except ValueError:
+            print("Enter valid option")
+            continue
+
+    def pending_task():
+        with open("task.csv") as fi:
+            file = csv.reader(fi)
+            while True:
+                for i in file:
+                    if i[3] != "Finished":
+                        print(i)
 
 
 def main():
@@ -83,6 +93,8 @@ def main():
                     print("Enter valid Option")
                     continue
                 update_progress(user)
+
+            # pending task
             case 3:
                 pending_task()
             case 4:
